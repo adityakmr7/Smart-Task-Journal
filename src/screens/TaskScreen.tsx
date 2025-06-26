@@ -1,13 +1,8 @@
 import {
-  View,
-  Text,
   SafeAreaView,
   StyleSheet,
-  Touchable,
-  TouchableOpacity,
 } from 'react-native';
 import React, { useRef, useState } from 'react';
-import { DeleteIcon, Edit3Icon } from 'lucide-react-native';
 import {
   TaskBottomSheet,
   TaskBottomSheetRef,

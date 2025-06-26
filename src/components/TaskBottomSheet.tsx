@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
   forwardRef,
-  useImperativeHandle,
+  useImperativeHandle, useCallback
 } from 'react';
 import {
   View,
@@ -15,7 +15,7 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Task } from '../types';
 
 export type TaskBottomSheetRef = {
@@ -91,8 +91,21 @@ export const TaskBottomSheet = forwardRef<TaskBottomSheetRef, Props>(
       }
     };
 
+
+    const renderBackdrop = useCallback(
+      (props: any) => (
+        <BottomSheetBackdrop
+          {...props}
+          disappearsOnIndex={-1}
+          appearsOnIndex={0}
+          opacity={0.5}
+        />
+      ),
+      [],
+    );
     return (
       <BottomSheet
+        backdropComponent={renderBackdrop}
         ref={bottomSheetRef}
         index={-1}
         snapPoints={snapPoints}
