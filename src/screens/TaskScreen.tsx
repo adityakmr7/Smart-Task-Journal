@@ -21,6 +21,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { FlatList } from 'react-native-gesture-handler';
 import { Task } from '../types';
+import { TaskCard } from '../components/TaskCard';
 
 const TaskScreen = () => {
   const dispatch = useAppDispatch();
@@ -35,48 +36,39 @@ const TaskScreen = () => {
     setEditingTask(task);
     sheetRef.current?.open(task);
   };
+  // delete task
   const handleDeleteTask = (id: string) => {
     dispatch(deleteTask(id) as any);
   };
+
+  const handleToggleComplete = (taskId: string) => {
+    const task = tasks.find((t) => t.id === taskId);
+    if (task) {
+      dispatch(
+        updateTask({
+          ...task,
+          completed: !task.completed,
+        }) as any
+      );
+    }
+  }
+
+  const renderTaskCard = ({ item }: { item: Task }) => (
+    <TaskCard
+      task={item}
+      onPress={() => handleEditTask(item)}
+      onToggleComplete={handleToggleComplete}
+    />
+  );
+
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Task" handleAddTask={handleAddTask} />
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: 16,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {}}
-              style={{
-                padding: 16,
-                borderBottomWidth: 1,
-                borderBottomColor: '#E0E0E0',
-              }}
-            >
-              <Text style={{ fontSize: 18, color: '#000000' }}>
-                {item.title}
-              </Text>
-              <Text style={{ color: '#888888' }}>{item.category}</Text>
-              <Text style={{ color: '#888888' }}>{item.timeSpent} minutes</Text>
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              <TouchableOpacity onPress={() => handleEditTask(item)}>
-                <Edit3Icon />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
-                <DeleteIcon />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
+        renderItem={renderTaskCard}
       />
 
       <TaskBottomSheet
